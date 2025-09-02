@@ -12,13 +12,13 @@ export default function QRBadge({ code }: Props) {
     const c = canvasRef.current;
     if (!code || !c) return;
 
-    // set explicit size for crisper QR (optional)
     c.width = 180;
     c.height = 180;
 
     (async () => {
       try {
-        const QR = await import('qrcode');
+        // NOTE: grab default to satisfy typings/bundling
+        const QR = (await import('qrcode')).default;
         if (!isMounted || !canvasRef.current) return;
         await QR.toCanvas(canvasRef.current, code, {
           width: 180,
@@ -32,7 +32,6 @@ export default function QRBadge({ code }: Props) {
 
     return () => {
       isMounted = false;
-      // optional: clear canvas on unmount or prop change
       const ctx = c.getContext('2d');
       if (ctx) ctx.clearRect(0, 0, c.width, c.height);
     };
